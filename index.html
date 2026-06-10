@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Culture Informatique — QCM Cours 2</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --encre:#1a2b4a;
+    --rouge:#c0392b;
+    --ligne:#b8d4e8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    min-height:100vh;
+    background:#4a5568 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" opacity="0.04"><path d="M0 40h80M40 0v80" stroke="white"/></svg>');
+    font-family:'Crimson Pro',serif;
+    display:flex;justify-content:center;
+    padding:30px 12px 60px;
+  }
+  /* ====== LA FEUILLE ====== */
+  .feuille{
+    background:#fdfcf7;
+    width:100%;max-width:820px;
+    box-shadow:0 10px 40px rgba(0,0,0,.45), 0 2px 8px rgba(0,0,0,.3);
+    border-radius:2px;
+    position:relative;
+    padding:0 0 50px 0;
+    background-image:repeating-linear-gradient(transparent, transparent 31px, var(--ligne) 31px, var(--ligne) 32px);
+  }
+  .feuille::before{ /* marge rouge */
+    content:'';position:absolute;top:0;bottom:0;left:64px;
+    width:1.5px;background:rgba(192,57,43,.45);
+  }
+  .feuille::after{ /* trous de classeur */
+    content:'';position:absolute;left:22px;top:120px;
+    width:14px;height:14px;border-radius:50%;
+    background:#4a5568;box-shadow:0 180px 0 #4a5568, 0 380px 0 #4a5568, 0 580px 0 #4a5568;
+    opacity:.55;
+  }
+  .contenu{padding:34px 50px 10px 96px;position:relative;z-index:2;}
+
+  /* ====== EN-TÊTE ====== */
+  .entete{
+    border:2.5px solid var(--encre);
+    padding:16px 22px 14px;
+    margin-bottom:26px;
+    background:#fdfcf7;
+    text-align:center;
+  }
+  .entete .ecole{font-size:13px;letter-spacing:4px;color:var(--rouge);font-weight:700;text-transform:uppercase;}
+  .entete h1{font-size:30px;color:var(--encre);letter-spacing:2px;margin:4px 0 2px;}
+  .entete .sous{font-size:17px;color:var(--encre);font-style:italic;}
+  .badge-note{
+    position:absolute;top:24px;right:40px;
+    border:2px solid var(--rouge);color:var(--rouge);
+    width:74px;height:74px;border-radius:50%;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:'Caveat',cursive;font-size:15px;transform:rotate(8deg);
+    background:#fdfcf7;
+  }
+  .badge-note b{font-size:21px;}
+
+  /* ====== IDENTITÉ ====== */
+  .identite{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:8px;}
+  .champ{flex:1;min-width:220px;}
+  .champ label{font-weight:700;color:var(--encre);font-size:18px;}
+  .champ input{
+    width:100%;border:none;border-bottom:2px dotted var(--encre);
+    background:transparent;outline:none;
+    font-family:'Caveat',cursive;font-size:26px;color:#1d4ed8;
+    padding:2px 6px;
+  }
+  .date-ligne{font-style:italic;color:var(--encre);font-size:15px;margin-bottom:4px;}
+
+  /* ====== CLASSES ====== */
+  .classes{margin:16px 0 4px;}
+  .classes .label-classe{font-weight:700;color:var(--encre);font-size:18px;margin-bottom:8px;display:block;}
+  .chips{display:flex;gap:12px;flex-wrap:wrap;}
+  .chip{cursor:pointer;}
+  .chip input{display:none;}
+  .chip span{
+    display:inline-block;padding:8px 22px;
+    border:2px solid var(--encre);border-radius:30px;
+    font-weight:700;font-size:17px;color:var(--encre);
+    letter-spacing:2px;background:#fff;transition:all .15s;
+  }
+  .chip input:checked + span{
+    background:var(--encre);color:#fdfcf7;
+    transform:rotate(-2deg) scale(1.05);
+    box-shadow:0 3px 8px rgba(26,43,74,.35);
+  }
+  .consigne{
+    background:rgba(255,243,176,.65);
+    border-left:4px solid #e6b800;
+    padding:10px 14px;margin:14px 0 8px;
+    font-size:16.5px;color:#5a4a00;
+  }
+  .btn{
+    display:inline-block;border:none;cursor:pointer;
+    background:var(--encre);color:#fdfcf7;
+    font-family:'Crimson Pro',serif;font-weight:700;font-size:18px;
+    padding:12px 34px;border-radius:3px;letter-spacing:1px;
+    box-shadow:0 3px 0 #0d1626;transition:transform .08s;
+  }
+  .btn:active{transform:translateY(2px);box-shadow:none;}
+  .btn-rouge{background:var(--rouge);box-shadow:0 3px 0 #7d241b;}
+  .centre{text-align:center;margin-top:24px;}
+
+  /* ====== QUESTIONS ====== */
+  .question{margin:22px 0 6px;}
+  .question .intitule{
+    font-weight:700;font-size:19px;color:var(--encre);
+    display:flex;gap:10px;
+  }
+  .question .num{
+    color:var(--rouge);min-width:34px;font-weight:700;
+  }
+  .reponses{margin:8px 0 0 44px;display:flex;flex-direction:column;gap:4px;}
+  .rep{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    font-size:17.5px;color:#22324f;padding:4px 10px;border-radius:4px;
+    transition:background .12s;
+  }
+  .rep:hover{background:rgba(29,78,216,.07);}
+  .rep input{display:none;}
+  .case{
+    width:22px;height:22px;min-width:22px;
+    border:2px solid var(--encre);border-radius:3px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Caveat',cursive;font-size:22px;color:#1d4ed8;
+    background:#fff;
+  }
+  .rep input:checked + .case::after{content:'✗';font-weight:700;}
+  .rep input:checked ~ .txt{color:#1d4ed8;font-weight:600;}
+  .lettre{font-weight:700;color:var(--rouge);min-width:24px;}
+
+  /* ====== CONFIRMATION ====== */
+  .tampon{
+    text-align:center;padding:70px 20px;
+  }
+  .tampon .stamp{
+    display:inline-block;border:4px solid #1e7d3c;color:#1e7d3c;
+    font-family:'Caveat',cursive;font-size:42px;font-weight:700;
+    padding:10px 38px;transform:rotate(-7deg);border-radius:6px;
+    margin-bottom:24px;letter-spacing:2px;
+  }
+  .tampon p{font-size:20px;color:var(--encre);}
+
+  /* ====== VUE PROF ====== */
+  .prof-bar{margin-top:18px;text-align:right;}
+  .prof-link{
+    font-size:13px;color:#9aa7bd;cursor:pointer;text-decoration:underline dotted;
+    background:none;border:none;font-family:'Crimson Pro',serif;
+  }
+  table.copies{width:100%;border-collapse:collapse;margin-top:14px;font-size:16px;}
+  table.copies th{
+    background:var(--encre);color:#fdfcf7;padding:8px 10px;text-align:left;font-size:15px;
+  }
+  table.copies td{border-bottom:1px solid #d5ddea;padding:7px 10px;color:#22324f;background:rgba(255,255,255,.6);}
+  table.copies tr.detail td{background:#eef3fa;font-size:14.5px;}
+  .note-ok{color:#1e7d3c;font-weight:700;}
+  .note-bof{color:#b07d00;font-weight:700;}
+  .note-ko{color:var(--rouge);font-weight:700;}
+  .mini{font-size:13px;color:#7a8699;}
+  .bonne{color:#1e7d3c;font-weight:600;}
+  .mauvaise{color:var(--rouge);font-weight:600;}
+  .actions-prof{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;}
+  .btn-petit{font-size:15px;padding:8px 18px;}
+
+  .hidden{display:none !important;}
+  @media (max-width:600px){
+    .contenu{padding:24px 18px 10px 52px;}
+    .feuille::before{left:34px;}
+    .badge-note{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="feuille">
+  <div class="contenu">
+
+    <div class="entete">
+      <div class="ecole">École d'Oryxis</div>
+      <h1>CULTURE INFORMATIQUE</h1>
+      <div class="sous">QCM — Cours 2</div>
+    </div>
+    <div class="badge-note">NOTE<b id="badgeNote">… /20</b></div>
+
+    <!-- ============ PAGE 1 : IDENTITÉ ============ -->
+    <div id="pageIdentite">
+      <div class="date-ligne">Date : <span id="laDate"></span></div>
+      <div class="identite">
+        <div class="champ">
+          <label>Nom :</label>
+          <input type="text" id="nom" maxlength="30" autocomplete="off" placeholder="...">
+        </div>
+        <div class="champ">
+          <label>Prénom :</label>
+          <input type="text" id="prenom" maxlength="30" autocomplete="off" placeholder="...">
+        </div>
+      </div>
+      <div class="classes">
+        <span class="label-classe">Classe :</span>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="classe" value="ALPHA"><span>ALPHA</span></label>
+          <label class="chip"><input type="radio" name="classe" value="OMEGA"><span>OMEGA</span></label>
+          <label class="chip"><input type="radio" name="classe" value="DELTA"><span>DELTA</span></label>
+          <label class="chip"><input type="radio" name="classe" value="SIGMA"><span>SIGMA</span></label>
+        </div>
+      </div>
+      <div class="consigne">
+        ✎ Inscris ton <b>nom</b>, ton <b>prénom</b> et ta <b>classe</b> puis clique sur « Commencer ».<br>
+        Une seule réponse par question. Bonne chance !
+      </div>
+      <div class="centre">
+        <button class="btn" onclick="commencer()">Commencer le contrôle →</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 2 : QUESTIONS ============ -->
+    <div id="pageQcm" class="hidden">
+      <div class="date-ligne">Copie de : <b style="font-family:'Caveat',cursive;font-size:24px;color:#1d4ed8;" id="rappelNom"></b></div>
+      <div id="zoneQuestions"></div>
+      <div class="centre">
+        <button class="btn btn-rouge" onclick="rendreCopie()">✓ Rendre ma copie</button>
+        <div class="mini" style="margin-top:8px;" id="compteur"></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 3 : CONFIRMATION ============ -->
+    <div id="pageFin" class="hidden">
+      <div class="tampon">
+        <div class="stamp">COPIE RENDUE ✓</div>
+        <p>Merci <b id="finNom"></b> !<br>Ta copie a bien été remise au professeur.</p>
+      </div>
+    </div>
+
+    <!-- ============ VUE PROF ============ -->
+    <div id="pageProf" class="hidden">
+      <h2 style="color:var(--encre);margin-bottom:4px;">📋 Copies remises — vue professeur</h2>
+      <div class="mini">Clique sur une ligne pour voir le détail de la copie.</div>
+      <div class="chips" style="margin-top:10px;">
+        <label class="chip"><input type="radio" name="filtreClasse" value="" checked onchange="filtrerClasse(this.value)"><span style="font-size:14px;padding:5px 14px;">TOUTES</span></label>
+        <label class="chip"><input type="radio" name="filtreClasse" value="ALPHA" onchange="filtrerClasse(this.value)"><span style="font-size:14px;padding:5px 14px;">ALPHA</span></label>
+        <label class="chip"><input type="radio" name="filtreClasse" value="OMEGA" onchange="filtrerClasse(this.value)"><span style="font-size:14px;padding:5px 14px;">OMEGA</span></label>
+        <label class="chip"><input type="radio" name="filtreClasse" value="DELTA" onchange="filtrerClasse(this.value)"><span style="font-size:14px;padding:5px 14px;">DELTA</span></label>
+        <label class="chip"><input type="radio" name="filtreClasse" value="SIGMA" onchange="filtrerClasse(this.value)"><span style="font-size:14px;padding:5px 14px;">SIGMA</span></label>
+      </div>
+      <table class="copies">
+        <thead><tr><th>#</th><th>Nom</th><th>Prénom</th><th>Classe</th><th>Date</th><th>Note</th></tr></thead>
+        <tbody id="listeCopies"></tbody>
+      </table>
+      <div class="actions-prof">
+        <button class="btn btn-petit" onclick="exporterCSV()">⬇ Exporter (CSV)</button>
+        <button class="btn btn-petit btn-rouge" onclick="toutEffacer()">🗑 Effacer toutes les copies</button>
+        <button class="btn btn-petit" style="background:#5a6b85;box-shadow:0 3px 0 #39455a;" onclick="location.reload()">← Retour</button>
+      </div>
+    </div>
+
+    <!-- ============ ZONE MOT DE PASSE PROF (sur la feuille) ============ -->
+    <div id="zoneMdp" class="hidden" style="margin-top:24px;border-top:2px dashed var(--encre);padding-top:18px;">
+      <div class="identite">
+        <div class="champ">
+          <label>🔑 Mot de passe professeur :</label>
+          <input type="password" id="mdpProf" maxlength="40" autocomplete="off" placeholder="..."
+                 onkeydown="if(event.key==='Enter')validerMdp()">
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:10px;">
+          <button class="btn btn-petit" onclick="validerMdp()">Ouvrir le registre</button>
+        </div>
+      </div>
+      <div id="mdpErreur" class="mini hidden" style="color:var(--rouge);font-weight:700;margin-top:6px;">✗ Mot de passe incorrect.</div>
+    </div>
+
+    <div class="prof-bar">
+      <button class="prof-link" onclick="montrerMdp()">accès professeur</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================== CONFIG ================== */
+const MDP_PROF = "oryxis";          // mot de passe d'accès prof (à changer)
+const API_URL  = "https://jsonblob.com/api/jsonBlob/019eb1d2-a38c-7e21-b5cd-db3942a0fafc"; // stockage central des copies
+const MODE_DEMO = !API_URL;          // tant que pas d'API : démo locale (aperçu uniquement)
+
+/* ================== LES 20 QUESTIONS ================== */
+/* correct: 0=A, 1=B, 2=C */
+const QUESTIONS = [
+  {q:"Que veut dire « www » ?", o:["World Wide Web","Web Wide World","World Web Wifi"], c:0},
+  {q:"Combien de bits dans un octet ?", o:["4","8","16"], c:1},
+  {q:"Quelle entreprise a créé Windows ?", o:["Apple","Google","Microsoft"], c:2},
+  {q:"Le « cerveau » de l'ordinateur, c'est… ?", o:["La RAM","Le processeur","Le disque dur"], c:1},
+  {q:"Ctrl + C, ça fait quoi ?", o:["Copier","Couper","Fermer"], c:0},
+  {q:"Quel animal est la mascotte de Linux ?", o:["Un pingouin","Un manchot","Un dauphin"], c:1},
+  {q:"À quoi sert un « cookie » sur un site ?", o:["À te nourrir","À mémoriser tes infos","À accélérer le wifi"], c:1},
+  {q:"Que stocke la RAM (mémoire vive) ?", o:["Tes fichiers pour toujours","Des données temporaires","Tes mots de passe"], c:1},
+  {q:"Que veut dire le « S » dans HTTPS ?", o:["Speed","Secure","Système"], c:1},
+  {q:"La solution magique quand un PC bug ?", o:["Le frapper","L'éteindre et le rallumer","Prier"], c:1},
+  {q:"D'où vient le mot « spam » ?", o:["D'un jambon en boîte","D'un virus","D'un mec qui s'appelait Spam"], c:0},
+  {q:"Comment appelle-t-on le symbole « @ » en français ?", o:["Arobase","Escargot","A rond"], c:0},
+  {q:"Combien d'octets dans 1 kilo-octet (Ko), historiquement ?", o:["1000","1024","100"], c:1},
+  {q:"Le tout premier « bug » informatique, c'était… ?", o:["Une faute de code","Un vrai insecte","Une coupure de courant"], c:1},
+  {q:"Qui a inventé le World Wide Web ?", o:["Bill Gates","Steve Jobs","Tim Berners-Lee"], c:2},
+  {q:"Que veut « vraiment » dire « Wi-Fi » ?", o:["Wireless Fidelity","Rien du tout","Wide Fidelity"], c:1},
+  {q:"L'erreur « 404 », ça veut dire quoi ?", o:["Page introuvable","Trop de monde","Site interdit"], c:0},
+  {q:"La toute première webcam au monde surveillait… ?", o:["Une banque","Une cafetière","Un parking"], c:1},
+  {q:"Le moteur de recherche le plus utilisé au monde ?", o:["Bing","Yahoo","Google"], c:2},
+  {q:"Combien de mots de passe les gens utilisent en moyenne ?", o:["Un seul partout","Un par site","Trois ou quatre recyclés"], c:2},
+];
+const LETTRES = ["A","B","C"];
+
+/* ================== ÉTAT ================== */
+let eleve = {nom:"", prenom:"", classe:""};
+document.getElementById("laDate").textContent = new Date().toLocaleDateString("fr-FR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+
+/* ================== NAVIGATION ================== */
+function commencer(){
+  const nom = document.getElementById("nom").value.trim();
+  const prenom = document.getElementById("prenom").value.trim();
+  const classeCoche = document.querySelector('input[name="classe"]:checked');
+  if(nom.length < 2 || prenom.length < 2){
+    alert("Écris ton nom ET ton prénom pour commencer !");
+    return;
+  }
+  if(!classeCoche){
+    alert("Choisis ta classe : Alpha, Omega, Delta ou Sigma !");
+    return;
+  }
+  eleve = {nom, prenom, classe:classeCoche.value};
+  document.getElementById("rappelNom").textContent = prenom + " " + nom + " — classe " + eleve.classe;
+  construireQcm();
+  document.getElementById("pageIdentite").classList.add("hidden");
+  document.getElementById("pageQcm").classList.remove("hidden");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+function construireQcm(){
+  const zone = document.getElementById("zoneQuestions");
+  zone.innerHTML = QUESTIONS.map((item,i)=>`
+    <div class="question">
+      <div class="intitule"><span class="num">${i+1}.</span><span>${item.q}</span></div>
+      <div class="reponses">
+        ${item.o.map((opt,j)=>`
+          <label class="rep">
+            <input type="radio" name="q${i}" value="${j}" onchange="majCompteur()">
+            <span class="case"></span>
+            <span class="lettre">${LETTRES[j]})</span>
+            <span class="txt">${opt}</span>
+          </label>`).join("")}
+      </div>
+    </div>`).join("");
+  majCompteur();
+}
+
+function majCompteur(){
+  let n = 0;
+  QUESTIONS.forEach((_,i)=>{ if(document.querySelector(`input[name="q${i}"]:checked`)) n++; });
+  document.getElementById("compteur").textContent = n + " / " + QUESTIONS.length + " questions répondues";
+}
+
+/* ================== RENDU DE COPIE ================== */
+let envoiEnCours = false;
+async function rendreCopie(){
+  if(envoiEnCours) return;
+  const reponses = [];
+  for(let i=0;i<QUESTIONS.length;i++){
+    const coche = document.querySelector(`input[name="q${i}"]:checked`);
+    reponses.push(coche ? parseInt(coche.value) : -1);
+  }
+  const manquantes = reponses.filter(r=>r===-1).length;
+  if(manquantes > 0 && !confirm(manquantes + " question(s) sans réponse. Rendre quand même ?")) return;
+
+  const score = reponses.reduce((s,r,i)=> s + (r===QUESTIONS[i].c ? 1:0), 0);
+  const copie = {
+    nom:eleve.nom, prenom:eleve.prenom, classe:eleve.classe,
+    date:new Date().toLocaleString("fr-FR"),
+    reponses, score
+  };
+  envoiEnCours = true;
+  const ok = await sauvegarder(copie);
+  envoiEnCours = false;
+  if(!ok) return; // probleme reseau : on reste sur la copie pour reessayer
+  document.getElementById("finNom").textContent = eleve.prenom;
+  document.getElementById("pageQcm").classList.add("hidden");
+  document.getElementById("pageFin").classList.remove("hidden");
+  window.scrollTo({top:0, behavior:"smooth"});
+}
+
+/* ================== STOCKAGE (central uniquement — rien sur le PC des eleves) ================== */
+async function sauvegarder(copie){
+  if(MODE_DEMO){
+    // apercu local seulement (sera remplace par le stockage central a la mise en ligne)
+    const all = JSON.parse(sessionStorage.getItem("qcm_demo")||"[]");
+    all.push(copie);
+    sessionStorage.setItem("qcm_demo", JSON.stringify(all));
+    return true;
+  }
+  // stockage central : lit la liste, ajoute la copie, reecrit (3 tentatives)
+  for(let t=0; t<3; t++){
+    try{
+      const r = await fetch(API_URL + "?t=" + Date.now(), {cache:"no-store"});
+      let all = await r.json();
+      if(!Array.isArray(all)) all = [];
+      all.push(copie);
+      const w = await fetch(API_URL, {method:"PUT", headers:{"Content-Type":"application/json"}, body:JSON.stringify(all)});
+      if(w.ok) return true;
+    }catch(e){}
+    await new Promise(res=>setTimeout(res, 600));
+  }
+  alert("⚠ Probleme reseau : ta copie n'a pas pu etre envoyee. Reessaie « Rendre ma copie ».");
+  return false;
+}
+async function chargerCopies(){
+  if(MODE_DEMO){
+    return JSON.parse(sessionStorage.getItem("qcm_demo")||"[]");
+  }
+  try{
+    const r = await fetch(API_URL + "?t=" + Date.now(), {cache:"no-store"});
+    const all = await r.json();
+    return Array.isArray(all) ? all : [];
+  }catch(e){ alert("⚠ Impossible de charger les copies (reseau)."); return []; }
+}
+
+/* ================== VUE PROF ================== */
+function montrerMdp(){
+  document.getElementById("zoneMdp").classList.toggle("hidden");
+  document.getElementById("mdpErreur").classList.add("hidden");
+  const inp = document.getElementById("mdpProf");
+  inp.value = ""; inp.focus();
+}
+function validerMdp(){
+  if(document.getElementById("mdpProf").value !== MDP_PROF){
+    document.getElementById("mdpErreur").classList.remove("hidden");
+    return;
+  }
+  document.getElementById("zoneMdp").classList.add("hidden");
+  accesProf();
+}
+async function accesProf(){
+  const copies = await chargerCopies();
+  toutesLesCopies = copies;
+  afficherCopies(copies);
+  document.getElementById("pageIdentite").classList.add("hidden");
+  document.getElementById("pageQcm").classList.add("hidden");
+  document.getElementById("pageFin").classList.add("hidden");
+  document.getElementById("pageProf").classList.remove("hidden");
+  document.getElementById("badgeNote").textContent = copies.length + " copie" + (copies.length>1?"s":"");
+}
+
+let toutesLesCopies = [];
+function filtrerClasse(classe){
+  afficherCopies(classe ? toutesLesCopies.filter(c=>c.classe===classe) : toutesLesCopies);
+}
+function afficherCopies(copies){
+  const tbody = document.getElementById("listeCopies");
+  if(copies.length === 0){
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;font-style:italic;">Aucune copie rendue pour le moment.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = copies.map((c,i)=>{
+    const cls = c.score>=15 ? "note-ok" : (c.score>=10 ? "note-bof" : "note-ko");
+    const detail = QUESTIONS.map((q,j)=>{
+      const r = c.reponses[j];
+      const txt = r===-1 ? "—" : LETTRES[r]+") "+q.o[r];
+      const ok = r===q.c;
+      return `<div>${j+1}. <span class="${ok?'bonne':'mauvaise'}">${txt}</span>${ok?'':' <span class="mini">(attendu : '+LETTRES[q.c]+')</span>'}</div>`;
+    }).join("");
+    return `
+      <tr style="cursor:pointer;" onclick="document.getElementById('det${i}').classList.toggle('hidden')">
+        <td>${i+1}</td><td><b>${c.nom}</b></td><td>${c.prenom}</td>
+        <td><b>${c.classe||"—"}</b></td>
+        <td class="mini">${c.date}</td><td class="${cls}">${c.score} / 20</td>
+      </tr>
+      <tr id="det${i}" class="detail hidden"><td colspan="6">${detail}</td></tr>`;
+  }).join("");
+}
+
+async function exporterCSV(){
+  const copies = await chargerCopies();
+  let csv = "Nom;Prenom;Classe;Date;Note;" + QUESTIONS.map((_,i)=>"Q"+(i+1)).join(";") + "\n";
+  copies.forEach(c=>{
+    csv += `${c.nom};${c.prenom};${c.classe||"-"};${c.date};${c.score}/20;` + c.reponses.map(r=>r===-1?"-":LETTRES[r]).join(";") + "\n";
+  });
+  const blob = new Blob(["﻿"+csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "copies_qcm_cours2.csv";
+  a.click();
+}
+
+async function toutEffacer(){
+  if(!confirm("Effacer TOUTES les copies ? (irréversible)")) return;
+  if(MODE_DEMO){
+    sessionStorage.removeItem("qcm_demo");
+  } else {
+    await fetch(API_URL, {method:"PUT", headers:{"Content-Type":"application/json"}, body:"[]"}).catch(()=>{});
+  }
+  location.reload();
+}
+</script>
+</body>
+</html>
